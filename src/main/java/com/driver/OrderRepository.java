@@ -110,6 +110,7 @@ public class OrderRepository {
 
     public Integer findCountOfUnassignedOrders(){
         // your code here
+        return orderToPartnerMap.size();
         int count=0;
         for (String order:orderMap.keySet()){
             if(!orderToPartnerMap.containsKey(order)){
