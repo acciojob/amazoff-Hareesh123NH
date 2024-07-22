@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 public class OrderService {
 
     @Autowired
-    OrderRepository orderRepository = new OrderRepository();
+    OrderRepository orderRepository=new OrderRepository();
 
     public void addOrder(Order order){
+        System.out.println("request get at service");
+        System.out.println(orderRepository);
         orderRepository.saveOrder(order);
     }
 
@@ -24,6 +26,7 @@ public class OrderService {
     }
 
     public Order getOrderById(String orderId){
+        System.out.println(orderRepository);
         return orderRepository.findOrderById(orderId);
     }
 
