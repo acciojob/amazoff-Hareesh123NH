@@ -22,6 +22,10 @@ public class OrderController {
     @Autowired
     OrderService orderService=new OrderService();
 
+    @GetMapping("/home")
+    public String gethome(){
+        return "Hello World";
+    }
 
     @PostMapping("/add-order")
     public ResponseEntity<String> addOrder(@RequestBody Order order){
