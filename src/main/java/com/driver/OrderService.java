@@ -12,8 +12,8 @@ public class OrderService {
     OrderRepository orderRepository=new OrderRepository();
 
     public void addOrder(Order order){
-        System.out.println("request get at service");
-        System.out.println(orderRepository);
+        //System.out.println("request get at service");
+        //System.out.println(orderRepository);
         orderRepository.saveOrder(order);
     }
 

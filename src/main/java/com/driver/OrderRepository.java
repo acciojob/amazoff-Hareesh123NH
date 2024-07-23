@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class OrderRepository {
 
-    private final HashMap<String, Order> orderMap;
+    private HashMap<String, Order> orderMap;
     private HashMap<String, DeliveryPartner> partnerMap;
     private HashMap<String, HashSet<String>> partnerToOrderMap;
     private HashMap<String, String> orderToPartnerMap;
@@ -22,14 +22,14 @@ public class OrderRepository {
 
     public void saveOrder(Order order){
         // your code here
-        orderMap.put(order.getId(),order);
+        orderMap.put(order.getId(),orderMap.getOrDefault(order.getId(),order));
     }
 
     public void savePartner(String partnerId){
         // your code here
         // create a new partner with given partnerId and save it
         DeliveryPartner partner=new DeliveryPartner(partnerId);
-        partnerMap.put(partner.getId(),partner);
+        partnerMap.put(partner.getId(),partnerMap.getOrDefault(partner.getId(),partner));
     }
 
     public void saveOrderPartnerMap(String orderId, String partnerId){
@@ -38,10 +38,7 @@ public class OrderRepository {
             //add order to given partner's order list
             //increase order count of partner
             //assign partner to this order
-            HashSet<String> orders=new HashSet<>();
-            if(partnerToOrderMap.containsKey(partnerId)){
-                 orders=partnerToOrderMap.get(partnerId);
-            }
+            HashSet<String> orders=partnerToOrderMap.getOrDefault(partnerId,new HashSet<>());
             orders.add(orderId);
             DeliveryPartner partner=partnerMap.get(partnerId);
             partner.setNumberOfOrders(partner.getNumberOfOrders()+1);
@@ -56,30 +53,25 @@ public class OrderRepository {
 
     public DeliveryPartner findPartnerById(String partnerId){
         // your code here
-        return partnerMap.get(partnerId);
+        return partnerMap.getOrDefault(partnerId,new DeliveryPartner());
     }
 
     public Integer findOrderCountByPartnerId(String partnerId){
         // your code here
-        return partnerMap.get(partnerId).getNumberOfOrders();
+        return partnerMap.getOrDefault(partnerId,new DeliveryPartner(0)).getNumberOfOrders();
     }
 
     public List<String> findOrdersByPartnerId(String partnerId){
         // your code here
-        if(!partnerToOrderMap.containsKey(partnerId)){
-            return new ArrayList<>();
-        }
-        HashSet<String> orders=partnerToOrderMap.get(partnerId);
-        List<String> orderlist = new ArrayList<>(orders);
-        return orderlist;
+        HashSet<String> orders=partnerToOrderMap.getOrDefault(partnerId,new HashSet<>());
+        return new ArrayList<>(orders);
 
     }
 
     public List<String> findAllOrders(){
         // your code here
         // return list of all orders
-        List<String> orders=new ArrayList<>(orderMap.keySet());
-        return orders;
+        return new ArrayList<>(orderMap.keySet());
     }
 
     public void deletePartner(String partnerId){
@@ -110,14 +102,9 @@ public class OrderRepository {
 
     public Integer findCountOfUnassignedOrders(){
         // your code here
-        return orderToPartnerMap.size();
-        int count=0;
-        for (String order:orderMap.keySet()){
-            if(!orderToPartnerMap.containsKey(order)){
-                count++;
-            }
-        }
-        return count;
+
+        return orderMap.size()-orderToPartnerMap.size();
+
     }
 
     public Integer findOrdersLeftAfterGivenTimeByPartnerId(String timeString, String partnerId){
