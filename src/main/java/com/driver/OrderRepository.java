@@ -48,12 +48,18 @@ public class OrderRepository {
 
     public Order findOrderById(String orderId){
         // your code here
+        if(!orderMap.containsKey(orderId)){
+            return null;
+        }
         return orderMap.get(orderId);
     }
 
     public DeliveryPartner findPartnerById(String partnerId){
         // your code here
-        return partnerMap.getOrDefault(partnerId,new DeliveryPartner());
+        if(!partnerMap.containsKey(partnerId)){
+            return null;
+        }
+        return partnerMap.get(partnerId);
     }
 
     public Integer findOrderCountByPartnerId(String partnerId){
@@ -71,14 +77,20 @@ public class OrderRepository {
     public List<String> findAllOrders(){
         // your code here
         // return list of all orders
+
         return new ArrayList<>(orderMap.keySet());
     }
 
     public void deletePartner(String partnerId){
         // your code here
         // delete partner by ID
-        partnerToOrderMap.remove(partnerId);
-        partnerMap.remove(partnerId);
+        if(partnerToOrderMap.containsKey(partnerId)){
+            partnerToOrderMap.remove(partnerId);
+        }
+        if ((partnerMap.containsKey(partnerId))){
+            partnerMap.remove(partnerId);
+        }
+
         for(String order:orderToPartnerMap.keySet()){
             if(orderToPartnerMap.get(order).equals(partnerId)){
                 orderToPartnerMap.remove(order);
@@ -89,8 +101,12 @@ public class OrderRepository {
     public void deleteOrder(String orderId){
         // your code here
         // delete order by ID
-        orderToPartnerMap.remove(orderId);
-        orderMap.remove(orderId);
+        if (orderToPartnerMap.containsKey(orderId)){
+            orderToPartnerMap.remove(orderId);
+        }
+       if (orderMap.containsKey(orderId)){
+           orderMap.remove(orderId);
+       }
         for(String partner:partnerToOrderMap.keySet()){
             if(partnerToOrderMap.get(partner).contains(orderId)){
                 partnerToOrderMap.get(partner).remove(orderId);
@@ -103,7 +119,7 @@ public class OrderRepository {
     public Integer findCountOfUnassignedOrders(){
         // your code here
 
-        return orderMap.size()-orderToPartnerMap.size();
+        return orderToPartnerMap.size();
 
     }
 
